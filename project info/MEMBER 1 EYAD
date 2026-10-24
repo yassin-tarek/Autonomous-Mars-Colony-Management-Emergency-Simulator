@@ -1,1 +1,162 @@
+import java.util.*;
 
+
+enum ResourceType {
+    OXYGEN, WATER, FOOD, FUEL, BATTERY_POWER, MEDICAL_SUPPLIES, SPARE_PARTS
+}
+
+enum Capability {
+    SCIENTIFIC_RESEARCH,
+    EQUIPMENT_REPAIR,
+    MEDICAL_CARE,
+    SURFACE_EXPLORATION,
+    AERIAL_RECON,
+    COMMUNICATION,
+    FIRE_RESPONSE
+}
+
+enum MissionState {
+    ASSIGNED, IN_PROGRESS, COMPLETED, FAILED
+}
+
+enum EnvironmentCondition {
+    NORMAL, DUST_STORM, COMMUNICATION_DISRUPTION
+}
+
+enum EmergencyState {
+    TRIGGERED, RESOLVED, UNRESOLVED
+}
+
+class Equipment {//class isa we will need it to solve problem el equipment 
+    private String name;
+    private Capability providedCapability;
+    private boolean damaged;
+
+    public Equipment(String name, Capability providedCapability) {
+        this.name = name;
+        this.providedCapability = providedCapability;
+        this.damaged = false;
+    }
+
+    public String getName() { return name; }
+    public Capability getProvidedCapability() { return providedCapability; }
+    public boolean isDamaged() { return damaged; }
+    public void setDamaged(boolean damaged) { this.damaged = damaged; }
+
+    @Override
+    public String toString() {
+        return name + (damaged ? " [DAMAGED]" : " [OK]");
+    }
+}
+
+class LifeSupportSystem {
+    private boolean functional;
+    private int filtrationEfficiency;
+
+    public LifeSupportSystem() {
+        this.functional = true;
+        this.filtrationEfficiency = 100;
+    }
+
+    public boolean isFunctional() { return functional; }
+    public void setFunctional(boolean functional) {
+        this.functional = functional;
+        this.filtrationEfficiency = functional ? 100 : 40;//in case oxygen leak it will drop to 40
+    }
+    public int getFiltrationEfficiency() { return filtrationEfficiency; }//effeciency getter 
+}
+
+
+
+abstract class Facility {
+    protected String name;
+    protected String location;
+    protected int capacity;
+    protected boolean operational;
+    protected Map<ResourceType, Integer> resources;// map to have the resources and quantity for it like oxygen 200 
+    protected List<Equipment> equipmentList; // Aggregation it creates empty list to add equipment in faciclity
+
+    public Facility(String name, String location, int capacity) {
+        this.name = name;
+        this.location = location;
+        this.capacity = capacity;
+        this.operational = true;
+        this.resources = new EnumMap<>(ResourceType.class);// ENUM because its enum datattype 
+        this.equipmentList = new ArrayList<>();
+    }
+
+    public String getName() { return name; }
+    public String getLocation() { return location; }
+    public int getCapacity() { return capacity; }
+    public boolean isOperational() { return operational; }
+    public void setOperational(boolean operational) { this.operational = operational; }
+    public List<Equipment> getEquipmentList() { return equipmentList; }
+
+    public void addEquipment(Equipment eq) {//to add el equipnments we need 
+        equipmentList.add(eq);
+    }
+
+    public void addResource(ResourceType type, int amount) {
+        if (amount < 0) return;
+        
+        resources.put(type, getResourceQuantity(type) + amount);// map 3lshan ana 3ayez value and name of it
+    }
+
+    public int getResourceQuantity(ResourceType type) {
+        return resources.getOrDefault(type, 0);
+    }
+
+    // Deducts up to available amount SO FOOKING IMPORTNAT FOR MISSIONS Ai generated elsra7a but i catch the idea of the method
+    public int deductResourceUpTo(ResourceType type, int amount) {
+        int current = getResourceQuantity(type);
+        int deducted = Math.min(current, Math.max(0, amount));
+        resources.put(type, current - deducted);
+        return deducted;
+    }
+
+    public Map<ResourceType, Integer> getResources() {//getter 3ady 
+        return Collections.unmodifiableMap(resources);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s) | Operational: %s | Resources: %s | Equipment: %s",
+                name, getClass().getSimpleName(), operational, resources, equipmentList);
+    }
+}
+
+class Habitat extends Facility {
+    //COMPOSITION HAS A STRONG
+    private final LifeSupportSystem lifeSupport;
+
+    public Habitat(String name, String location, int capacity) {
+        super(name, location, capacity);
+        this.lifeSupport = new LifeSupportSystem();
+    }
+
+    public LifeSupportSystem getLifeSupport() { return lifeSupport; }
+}
+
+class Laboratory extends Facility {
+    public Laboratory(String name, String location, int capacity) {
+        super(name, location, capacity);
+    }
+}
+
+class StorageFacility extends Facility {
+    public StorageFacility(String name, String location, int capacity) {
+        super(name, location, capacity);
+    }
+}
+
+class PowerStation extends Facility {
+    public PowerStation(String name, String location, int capacity) {
+        super(name, location, capacity);
+    }
+}
+
+class CommunicationStation extends Facility {
+    public CommunicationStation(String name, String location, int capacity) {
+        super(name, location, capacity);
+    }
+}
