@@ -62,13 +62,6 @@ public abstract class CrewMember extends Agent {
     }
 }
 
-class Scientist extends CrewMember {
-    public Scientist(String id, String name, String location) {
-        super(id, name, location);
-        addCapability(Capability.SCIENTIFIC_RESEARCH);
-    }
-}
-
 class Engineer extends CrewMember {
     public Engineer(String id, String name, String location) {
         super(id, name, location);
