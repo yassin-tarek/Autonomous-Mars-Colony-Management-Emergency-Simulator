@@ -1,5 +1,14 @@
 package marsops.Agents.Robots;
 
-public class Drone {
-  
+import java.util.Set;
+import marsops.AppEnums.*;
+
+public class Drone extends Robot {
+
+    public Drone(String id, String name, String location, int batteryLevel) {
+        super(id, name, location, batteryLevel, Set.of(
+            Capability.SCIENTIFIC_RESEARCH // SCIENTIFC CAPABLITY IN DRONE
+        )
+             );
+    }
 }
