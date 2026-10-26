@@ -26,6 +26,8 @@ public enum EmergencyState {
     TRIGGERED, RESOLVED, UNRESOLVED
 }
 
+public enum RobotCondition { OPERATIONAL, DAMAGED }
+
 
 public enum OperationType {
     SURFACE_OPERATION,
