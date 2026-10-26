@@ -32,7 +32,7 @@ public abstract class CrewMember extends Agent {
 
     @Override
     public boolean isUsable() {
-        return health > 25 && fatigue < 90;
+        return health > 30 && fatigue < 90; //to be useable crew member these conditions should be availabe
     }
 
     @Override
@@ -55,7 +55,7 @@ public abstract class CrewMember extends Agent {
     @Override
     public String toString() {
         return String.format(
-            "%s [%s - %s] | Loc: %s | Health: %d | Fatigue: %d | Avail: %s | Caps: %s",
+            "%s [%s - %s] | Loc: %s | Health: %d | Fatigue: %d | Avail: %s | Caps: %s",    // to be easier in print i will overide teh tostring
             getName(), getId(), getClass().getSimpleName(),
             getLocation(), health, fatigue, isAvailable(), capabilities
         );
