@@ -1,5 +1,8 @@
 package marsops.Agents.Crew;
 
-public class Scientist {
-  
+class Scientist extends CrewMember {
+    public Scientist(String id, String name, String location) {
+        super(id, name, location);
+        addCapability(Capability.SCIENTIFIC_RESEARCH);
+    }
 }
