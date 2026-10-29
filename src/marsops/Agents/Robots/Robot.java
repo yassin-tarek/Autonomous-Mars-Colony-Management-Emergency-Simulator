@@ -14,6 +14,7 @@ public abstract class Robot extends Agent {
     protected Robot(String id, String name, String location, int batteryLevel, Set<Capability> capabilities) {
         super(id, name, location);
         this.batteryLevel = Math.max(0, Math.min(MAX_BATTERY, batteryLevel));
+        this.condition = RobotCondition.OPERATIONAL;
         this.capabilities = Set.copyOf(capabilities);
     }
 
