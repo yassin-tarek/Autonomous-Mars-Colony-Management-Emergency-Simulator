@@ -10,7 +10,7 @@ private final String name;
 private String location;
 private boolean isAvailable;
 
-protected Agent(String id, String name, String location){
+public Agent(String id, String name, String location){
     this.id = id;
     this.name = name;
     this.location = location;

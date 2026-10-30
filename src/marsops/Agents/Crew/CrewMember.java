@@ -1,6 +1,6 @@
-package marsops.Agents;
-
+package marsops.Agents.Crew;
 import java.util.*;
+import marsops.Agents.Agent;
 import marsops.AppEnums.*;
 
 public abstract class CrewMember extends Agent {

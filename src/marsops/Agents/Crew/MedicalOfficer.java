@@ -1,4 +1,5 @@
 package marsops.Agents.Crew;
+import marsops.AppEnums.*;
 
 class MedicalOfficer extends CrewMember {
     public MedicalOfficer(String id, String name, String location) {
