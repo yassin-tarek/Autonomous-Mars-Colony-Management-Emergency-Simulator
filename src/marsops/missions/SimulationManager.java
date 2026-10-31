@@ -7,7 +7,6 @@ import marsops.Agents.Robots.Robot;
 import marsops.AppEnums.Capability;
 import marsops.AppEnums.MissionState;
 import marsops.AppEnums.OperationType;
-import marsops.Facilities.Facility;
 import marsops.colony.Colony;
 import marsops.colony.MarsEnvironment;
 import marsops.colony.ResourceManager;
