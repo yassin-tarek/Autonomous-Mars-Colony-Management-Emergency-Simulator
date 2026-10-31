@@ -1,5 +1,5 @@
 package marsops.missions;
-
+import marsops.AppEnums.MissionType;
 import java.util.*;
 import marsops.Agents.Agent;
 import marsops.Agents.Crew.CrewMember;
