@@ -13,7 +13,7 @@ public class OxygenLeakEmergency extends Emergency {
 
     public OxygenLeakEmergency(String id, Habitat affectedHabitat, int leakOxygenAmount) {
         super(id, affectedHabitat.getName());
-
+        
         this.affectedHabitat = affectedHabitat;
         this.leakOxygenAmount = leakOxygenAmount;
 
