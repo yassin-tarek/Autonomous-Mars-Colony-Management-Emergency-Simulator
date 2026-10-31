@@ -167,10 +167,9 @@ public abstract class Mission {
         this.state = state;
     }
 
-    // Convenience getter matching MissionStatus
-    public MissionStatus getStatus() {
-        return MissionStatus.fromState(this.state);
-    }
+  public MissionState getStatus() {
+    return this.state;
+}
 
     public String getFailureReason() {
         return failureReason;
