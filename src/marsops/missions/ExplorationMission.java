@@ -1,5 +1,5 @@
 package marsops.missions;
-
+import marsops.AppEnums.MissionType;
 import marsops.Agents.Agent;
 import marsops.AppEnums.Capability;
 import marsops.AppEnums.OperationType;
