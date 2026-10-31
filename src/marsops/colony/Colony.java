@@ -55,9 +55,8 @@ public class Colony {
     }
 
     public List<Facility> getFacilities() {
-        return facilities;
-    }
-
+    return Collections.unmodifiableList(facilities);
+}
     public MarsEnvironment getEnvironment() {
         return environment;
     }
