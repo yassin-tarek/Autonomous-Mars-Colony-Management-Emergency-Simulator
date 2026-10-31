@@ -41,4 +41,8 @@ public abstract boolean isUsable(); //for robot check not damaged and battery>0,
     }
 
     // Add mission checks here.
+    public boolean canPerform(marsops.missions.Mission mission) {
+        if (mission == null) return false;
+        return mission.canBePerformedBy(this);
+    }
 }

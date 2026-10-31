@@ -1,7 +1,6 @@
 package marsops.Facilities;
 
-class Habitat extends Facility {
-    //COMPOSITION HAS A STRONG
+public class Habitat extends Facility {
     private final LifeSupportSystem lifeSupport;
 
     public Habitat(String name, String location, int capacity) {
