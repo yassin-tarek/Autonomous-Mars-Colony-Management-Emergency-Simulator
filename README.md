@@ -1,549 +1,523 @@
-# 🚀 MARS-OPS — Autonomous Mars Colony Management & Emergency Simulator
+# 🚀 MARS-OPS
+## Autonomous Mars Colony Management & Emergency Simulator
 
-**Alexandria University · Faculty of Engineering**
+MARS-OPS is a Java Object-Oriented Programming project that simulates the management of an autonomous Mars colony.
 
-Computer and Communication Engineering — Specialized Scientific Programs
+The system manages:
 
-**Programming II · Fall 2026 · Lab 5**
+- 👨‍🚀 Human crew members
+- 🤖 Robotic agents
+- 🏢 Colony facilities
+- 📦 Resources
+- 🎯 Different types of missions
+- 🚨 Emergency situations
+- 🌪️ Mars environmental conditions
+- ⏱️ Simulation time and mission lifecycle
 
-> A Java object-oriented simulation that manages a Mars research colony: its personnel, robots, facilities, resources, missions, environmental conditions, and emergencies.
-
-> **Note:** This README documents the intended design. Confirm that class names, rules, scenarios, and file paths match the final implementation before submission.
-
----
-
-## 📑 Table of Contents
-
-1. [System Description](#1-system-description)
-
-2. [Main Components](#2-main-components)
-
-3. [Project Structure](#3-project-structure)
-
-4. [Design Decisions & OOP Concepts](#4-design-decisions--oop-concepts)
-
-5. [Object Relationships](#5-object-relationships)
-
-6. [Resource Allocation Rules](#6-resource-allocation-rules)
-
-7. [Mission Rules & Mission States](#7-mission-rules--mission-states)
-
-8. [Environmental Effects](#8-environmental-effects)
-
-9. [Emergency Rules](#9-emergency-rules)
-
-10. [Simulation & Time Management](#10-simulation--time-management)
-
-11. [UML Diagrams](#11-uml-diagrams)
-
-12. [Compiling & Running](#12-compiling--running)
-
-13. [Demonstration Scenarios](#13-demonstration-scenarios)
-
-14. [Assumptions & Other Implementation Decisions](#14-assumptions--other-implementation-decisions)
-
-15. [Team](#15-team)
+The project demonstrates important **Object-Oriented Programming (OOP)** concepts such as inheritance, abstraction, polymorphism, encapsulation, enums, and composition.
 
 ---
 
-## 1. System Description
+# 📌 Project Features
 
-MARS-OPS is the software system for a small research colony on Mars. The colony operates with limited resources and a mix of human personnel, autonomous robots, habitats, laboratories, and specialized equipment.
+## 👨‍🚀 Agent Management
 
-The system is able to:
+The colony contains different types of agents.
 
-- Manage colony **personnel** and **robotic units**.
+### Crew Members
 
-- Manage **facilities** and track **resources**.
+- 🔬 Scientist
+- 🔧 Engineer
+- 🏥 Medical Officer
 
-- **Assign missions** and simulate the passage of time.
+### Robots
 
-- Determine whether available entities **can perform** a mission.
+- 🚙 Exploration Rover
+- 🔧 Repair Robot
+- 🚁 Drone
 
-- Handle **equipment failures** and **emergencies**, and update the colony state afterwards.
+Each agent has its own capabilities and operational behavior.
 
-- Produce a **colony status report**.
-
-The focus of the project is not just storing data, but modelling **how objects collaborate** instead of placing all the logic in a single class.
-
----
-
-## 2. Main Components
-
-| Component | Responsibility |
-
-|---|---|
-
-| **`MarsColony`** | Central coordinator. Owns the facilities, personnel and robots; receives and tracks missions; enforces the one-active-mission rule; computes colony-wide resource totals. |
-
-| **`Simulation`** | Controls time. `advanceTime(n)` progresses missions, drains batteries, increases fatigue, updates the environment, and can trigger emergencies. |
-
-| **Personnel** (`Scientist`, `Engineer`, `MedicalOfficer`) | Human agents with name, ID, health, location, skills, fatigue, and availability. |
-
-| **Robots** (`ExplorationRover`, `RepairRobot`, `Drone`) | Robotic agents with battery level, damage status, location, and availability. |
-
-| **Facilities** (`Habitat`, `Laboratory`, `StorageFacility`, `PowerStation`, `CommunicationStation`) | Hold resources and equipment; have a location, capacity, and operational status. |
-
-| **`Resource`** types | Oxygen, Water, Food, Fuel, Battery Power, Medical Supplies, Spare Parts. |
-
-| **Missions** (`ExplorationMission`, `RepairMission`, `ResearchMission`, `RescueMission`) | Describe the work to be done, requirements, duration, and state. |
-
-| **Emergencies** (`OxygenLeak`, `Fire`, `RoverBreakdown`, `MedicalEmergency`) | Describe incidents, their required responders, and their outcomes. |
-
-| **`Environment`** | Current Mars condition: `NORMAL`, `DUST_STORM`, `COMMUNICATION_DISRUPTION`. |
+The system uses polymorphism to determine whether an agent can perform a specific mission.
 
 ---
 
-## 3. Project Structure
+# 🎯 Mission Management
 
+The system supports multiple mission types:
+
+- 🗺️ Exploration Mission
+- 🔧 Repair Mission
+- 🔬 Research Mission
+- 🆘 Rescue Mission
+
+Each mission contains information such as:
+
+- Mission ID
+- Mission name
+- Mission type
+- Duration
+- Required resources
+- Required capabilities
+- Assigned agents
+- Target facility
+- Operation type
+- Current mission state
+
+---
+
+# 🔄 Mission Lifecycle
+
+A mission follows a lifecycle managed by the simulation system.
+
+```text
+ASSIGNED
+    ↓
+IN_PROGRESS
+    ↓
+COMPLETED
 ```
 
-StudentID-Prog-II-Lab5/
+If a mission cannot be performed or encounters a problem:
 
-├── src/
+```text
+FAILED
+```
 
-│   ├── Main.java                  # Testing class – runs all 5 demo scenarios
+The system also releases assigned agents when a mission is completed or failed.
 
-│   ├── colony/                    # MarsColony, Simulation, Environment
+---
 
-│   ├── agents/                    # Agent interface, CrewMember, personnel, robots
+# ⚠️ Mission Validation Rules
 
-│   ├── facilities/                # Facility hierarchy, LifeSupportSystem, Equipment
+Before accepting a mission, the `SimulationManager` performs several validation checks.
 
-│   ├── resources/                 # Resource, ResourceType, ResourceRequirement
+### 1️⃣ Only One Active Mission
 
-│   ├── missions/                  # Mission hierarchy, MissionState
+The colony cannot run multiple active missions at the same time.
 
-│   └── emergencies/               # Emergency hierarchy, EmergencyStatus
-
-├── uml/
-
-│   ├── class-diagram.png
-
-│   ├── object-diagram.png
-
-│   ├── state-machine-diagram.png
-
-│   ├── sequence-mission.png
-
-│   ├── sequence-oxygen-leak.png
-
-│   ├── sequence-environment.png
-
-│   ├── use-case-diagram.png
-
-│   └── source/                    # Editable .drawio files
-
-└── README.md
-
+```text
+Mission A → Active
+Mission B → Rejected
 ```
 
 ---
 
-## 4. Design Decisions & OOP Concepts
+### 2️⃣ Environmental Restrictions
 
-### Encapsulation
+The Mars environment can restrict specific operations.
 
-All attributes (battery, health, oxygen quantity, mission state, …) are `private`. State changes go through methods that enforce the rules, e.g. a habitat's oxygen can never fall below zero and the colony can never consume more than is available.
+Examples include:
 
-### Abstraction
+🌪️ **Dust Storm**
 
-Abstract classes/interfaces define *what* an entity does without fixing *how*:
+- Surface operations are restricted.
 
-`Agent`, `Facility`, `Mission`, `Emergency`.
+📡 **Communication Disruption**
 
-### Inheritance
+- Remote drone operations may be restricted.
+- Communication-dependent operations may be unavailable.
 
-- `CrewMember` → `Scientist`, `Engineer`, `MedicalOfficer`
+---
 
-- `Robot` → `ExplorationRover`, `RepairRobot`, `Drone`
+### 3️⃣ Agent Availability
 
-- `Facility` → `Habitat`, `Laboratory`, `StorageFacility`, `PowerStation`, `CommunicationStation`
+An agent cannot be assigned if they are:
 
-- `Mission` → `ExplorationMission`, `RepairMission`, `ResearchMission`, `RescueMission`
+- Already unavailable
+- Damaged
+- Fatigued
+- Not operationally ready
 
-- `Emergency` → `OxygenLeak`, `Fire`, `RoverBreakdown`, `MedicalEmergency`
+---
 
-### Polymorphism & the Capability Model
+### 4️⃣ Capability Validation
 
-A mission **never checks the concrete type** of an agent. Instead, every agent answers a question:
+Agents must have the required capabilities for a mission.
+
+Examples:
+
+```text
+Scientist
+    ↓
+SCIENTIFIC_RESEARCH
+
+Engineer
+    ↓
+EQUIPMENT_REPAIR
+
+Medical Officer
+    ↓
+MEDICAL_CARE
+
+Exploration Rover
+    ↓
+SURFACE_EXPLORATION
+```
+
+The project uses polymorphic methods such as:
 
 ```java
-
-if (agent.canPerform(mission)) {
-
-    mission.assign(agent);
-
-}
-
+agent.canPerform(mission);
 ```
 
-Each agent class overrides `canPerform(Mission)` (and `canHandle(Emergency)` for emergencies) according to its own abilities. New agent types can be added without modifying any mission or colony code.
-
-### Collaboration over a God class
-
-Responsibilities are split:
-
-- `MarsColony` – receives missions, checks availability, aggregates resources.
-
-- `Mission` – knows its requirements, duration, and state.
-
-- `Agent` – knows whether it is capable and available.
-
-- `Facility` – stores its own resources and equipment.
-
-- `Simulation` – drives time.
-
-- `Emergency` – knows which responders it needs and how to apply its consequences.
-
----
-
-## 5. Object Relationships
-
-| Relationship | Where it is used | Why | UML | Java |
-
-|---|---|---|---|---|
-
-| **Association** | `Engineer` ↔ `Mission` | An engineer works on a mission; each can exist without the other. | Solid line | A method parameter / reference (`repair(Mission m)`) |
-
-| **Aggregation** | `MarsColony` ◇— `CrewMember`, `Robot` | Colony groups agents, but agents exist independently of the colony. | Hollow diamond | `List<CrewMember>` passed into the constructor |
-
-| **Composition** | `Habitat` ◆— `LifeSupportSystem` | The life-support system is created by and dies with its habitat. | Filled diamond | `private final LifeSupportSystem lifeSupport = new LifeSupportSystem();` |
-
-| **Inheritance** | `CrewMember` ◁— `Engineer`, `Scientist`, … | "is-a" specialisation with overridden behaviour. | Hollow triangle | `extends` |
-
----
-
-## 6. Resource Allocation Rules
-
-Resources are **stored in facilities** but **managed at the colony level**.
-
-1. **Colony-wide totals** – The total of a resource is the sum of that resource across all currently **operational** facilities. Resources in destroyed/unavailable facilities do **not** count.
-
-2. **Multiple sources** – A requirement may be met by drawing from several facilities. *(Example: Habitat A holds 300 O₂ and Storage holds 200 O₂ → a request for 450 is valid, a request for 600 is not.)*
-
-3. **All-or-nothing consumption** – If the full quantity cannot be supplied, **nothing is consumed** and the operation fails with a clear reason.
-
-4. **Local emergencies** – An oxygen leak reduces oxygen only in the affected habitat, which in turn lowers the colony-wide total.
-
-5. **Status report** – The colony status report shows colony-wide resource totals.
-
-6. **Allocation policy (our design decision)** –
-
-   > **Policy:** *Storage facilities are drained first, then remaining operational facilities in the order they were registered with the colony.*
-
-   >
-
-   > **Rationale:** Storage facilities exist to hold reserves, so habitats keep their local oxygen for as long as possible.
-
-Implementation note: the colony first **checks** the total available (`canSupply`), and only then **consumes** (`consume`), so a failed request never leaves resources partially deducted. Quantities can never become negative.
-
----
-
-## 7. Mission Rules & Mission States
-
-### Supported missions
-
-| Mission | Description | Requirements |
-
-|---|---|---|
-
-| **Exploration** | Explores a specified region | Suitable vehicle, required scientific skill, sufficient battery, required equipment |
-
-| **Repair** | Repairs a damaged facility/equipment | Engineer, repair robot, spare parts |
-
-| **Research** | Scientist performs an experiment in a lab | Scientist with the right skill, laboratory, scientific equipment, sufficient resources |
-
-| **Rescue** | Recovers a stranded entity | Appropriate vehicle, available personnel, communication capability |
-
-### One active mission at a time
-
-- A mission is submitted to the colony together with the agents it requires.
-
-- If another mission is active → `FAILED` (reason recorded).
-
-- If an agent lacks the required capability → `FAILED`.
-
-- If resources are insufficient → `FAILED`.
-
-- A rejected mission **never becomes active**.
-
-- An accepted mission becomes `ASSIGNED` and stays the active mission until it completes or fails.
-
-- **Failed missions are never retried** – a new mission must be created.
-
-- When a mission ends (completed *or* failed), **all** its agents become available again.
-
-- Facilities do **not** own or schedule missions; they are only referenced as targets/locations.
-
-### Mission states
-
-```
-
-            ┌──────────── rejected (busy / no capability / no resources) ───────────┐
-
-            │                                                                       ▼
-
- (submit) ──┴──► ASSIGNED ──► IN_PROGRESS ──► COMPLETED                          FAILED
-
-                     │             │
-
-                     │             └── equipment failure / environment / low battery ──► FAILED
-
-                     └── (start conditions no longer met) ───────────────────────────► FAILED
-
-```
-
-| State | Meaning |
-
-|---|---|
-
-| `ASSIGNED` | Accepted by the colony; agents reserved; resources reserved. |
-
-| `IN_PROGRESS` | Duration counter is running; each time unit advances it by 1. |
-
-| `COMPLETED` | Required duration reached; agents released. |
-
-| `FAILED` | Rejected or aborted with a recorded reason; agents released; never retried. |
-
-State is represented by a `MissionState` **enum**, and transitions are controlled **only** through methods inside `Mission`, so illegal transitions (e.g. `FAILED → IN_PROGRESS`) are impossible.
-
----
-
-## 8. Environmental Effects
-
-| Condition | Effect |
-
-|---|---|
-
-| **Normal** | No restrictions. |
-
-| **Dust storm** | Surface exploration missions **cannot begin**. Active rover missions **fail**. |
-
-| **Communication disruption** | Remote drones cannot be controlled; communication-dependent missions (e.g. Rescue) cannot be initiated; communication-dependent operations may fail. |
-
-Each mission/agent decides how it is affected by asking the `Environment` (e.g. `mission.isAllowedIn(environment)`), so adding a new condition does not require changing existing mission code.
-
-### 🔸 What happens to missions already in progress when the environment changes?
-
->
-
-> - **Dust storm begins:** any `IN_PROGRESS` **rover** mission immediately becomes `FAILED` with reason *"Dust storm: surface operations not allowed"*; its agents are released. Missions that do not depend on the surface (e.g. a lab Research mission) **continue**.
-
-> - **Communication disruption begins:** `IN_PROGRESS` missions that depend on communication (drone operation, rescue) become `FAILED`; others continue.
-
-> - **Conditions return to normal:** nothing is restarted automatically. Failed missions stay failed and must be re-created.
-
----
-
-## 9. Emergency Rules
-
-General rules:
-
-- The location of an emergency is a **facility** or the **Martian surface**.
-
-- Every agent has a current location. A rover on an exploration mission is on the surface; a broken-down rover **stays where it broke down**.
-
-- **Location does not restrict who can respond.** Any available agent may be dispatched, and dispatching **moves** the agent to the affected facility.
-
-- A responder is **appropriate** if it *reports* it can handle the emergency type (`agent.canHandle(emergency)`) — concrete types are never checked.
-
-- A responder is **available** if it is **not part of the active mission** and is in usable condition.
-
-- Emergencies **do not interrupt** active missions and are **not** subject to the one-active-mission limit.
-
-- If required responders are unavailable: the emergency is marked `UNRESOLVED`, a clear reason is recorded, **no response resources are consumed**, and it is **not retried automatically**.
-
-- Responders are released when the response ends.
-
-### Required responders per emergency
-
-| Emergency | Required responders | Response resources |
-
-|---|---|---|
-
-| **Oxygen Leak** *(given by spec)* | ≥ 1 human **and** ≥ 1 robot capable of repairs (e.g. Engineer + Repair Robot) | Spare parts, battery |
-
-| **Fire** | ≥ 1 Engineer + ≥ 1 Repair Robot for fire response; a Medical Officer if personnel are in the lab | Spare parts, battery, medical supplies (if treating) |
-
-| **Rover Breakdown** | ≥ 1 Engineer + ≥ 1 Repair Robot | Spare parts, battery |
-
-| **Medical Emergency** | ≥ 1 Medical Officer | Medical supplies (and oxygen); relevant facility must be operational |
-
-### 9.1 Oxygen Leak
-
-1. Triggered manually.
-
-2. Affected habitat identified.
-
-3. **Initial loss** (amount defined by the scenario) is deducted from that habitat only.
-
-4. Appropriate responders determined and checked for availability.
-
-5. Response resources checked (all-or-nothing).
-
-6. Responders dispatched and repair attempted.
-
-7. **If repaired:** total oxygen loss = the initial amount.
-
-   **If unresolved:** the **same amount is deducted again** → an unresolved leak costs **twice** a repaired leak.
-
-8. Habitat and emergency states updated; responders released.
-
-Rules: a habitat's oxygen **never drops below zero**; it is a **one-time deduction** (no continuous drain).
-
-### 9.2 Fire
-
-A laboratory catches fire. Consequences represented in the model: laboratory becomes **unavailable**, its equipment becomes **damaged**, oxygen consumption **increases**, fire-response personnel are required, and a **medical emergency** may be raised for personnel present in the lab.
-
-### 9.3 Rover Breakdown
-
-Occurs during an exploration mission. The system updates the rover's status (damaged), the mission status (`FAILED`), the rover's location (where it broke down), and the required repair resources. A repair operation may then be created.
-
-### 9.4 Medical Emergency
-
-The system checks that an appropriate medical officer is available, that medical supplies exist, and that the relevant facility is operational. After successful treatment, the patient's **health increases**.
-
----
-
-## 10. Simulation & Time Management
+instead of depending on concrete type checks such as:
 
 ```java
-
-simulation.advanceTime(1);
-
+instanceof
 ```
 
-Each time unit may cause:
+---
 
-- Active missions to progress by one unit (and complete/fail)
+### 5️⃣ Resource Availability
 
-- Robot batteries to decrease
+A mission requires sufficient resources before it can begin.
 
-- Crew fatigue to increase
+Examples include:
 
-- Resource levels to change
+- 🔋 Battery Power
+- ⛽ Fuel
+- 💧 Water
+- 🍽️ Food
+- 🫁 Oxygen
+- 🏥 Medical Supplies
+- 🔩 Spare Parts
 
-- The environment to change
-
-- Emergencies to occur
+Resources are managed through the colony's `ResourceManager`.
 
 ---
 
-## 11. UML Diagrams
+# 🚨 Emergency Management
 
-All diagrams were created with **draw.io** and are consistent with the final Java implementation.
+The system supports different emergency situations.
 
-| Diagram | File | Purpose |
+Examples include:
 
-|---|---|---|
+- 🔥 Fire Emergency
+- 🏥 Medical Emergency
+- 🫁 Oxygen Leak Emergency
+- 🚙 Rover Breakdown Emergency
 
-| Class Diagram | [`uml/class-diagram.png`](uml/class-diagram.png) | Static structure: classes, interfaces, enums, attributes, methods, visibility, multiplicities, relationships |
+Each emergency has a state that can represent its current situation.
 
-| Object Diagram | [`uml/object-diagram.png`](uml/object-diagram.png) | Snapshot of a consistent system state (e.g. just before an exploration mission) |
+```text
+TRIGGERED
+RESOLVED
+UNRESOLVED
+```
 
-| State Machine Diagram | [`uml/state-machine-diagram.png`](uml/state-machine-diagram.png) | Mission lifecycle: `ASSIGNED → IN_PROGRESS → COMPLETED / FAILED` |
-
-| Sequence – Mission | [`uml/sequence-mission.png`](uml/sequence-mission.png) | Submission, checks, acceptance/rejection, time advancement, completion |
-
-| Sequence – Oxygen Leak | [`uml/sequence-oxygen-leak.png`](uml/sequence-oxygen-leak.png) | Trigger, deduction, responders, resources, repair, release |
-
-| Sequence – Environment | [`uml/sequence-environment.png`](uml/sequence-environment.png) | Dust storm blocking an exploration mission |
-
-| Use Case Diagram | [`uml/use-case-diagram.png`](uml/use-case-diagram.png) | Colony Operator / Emergency Operator and system functionality |
-
-Editable sources are in [`uml/source/`](uml/source/).
+Agents with the appropriate capabilities can respond to emergencies.
 
 ---
 
-## 12. Compiling & Running
+# 🏢 Colony Facilities
 
-**Requirements:** JDK 17 or newer (`java -version`).
+The Mars colony contains different facilities.
 
-### Linux / macOS
+The project currently includes:
+
+- 🏠 Habitat
+- 🔬 Laboratory
+- ❤️ Life Support System
+- ⚡ Power Station
+- 📡 Communication Station
+- 📦 Storage
+- 🔧 Equipment
+
+Facilities can store and manage resources required by missions and colony operations.
+
+---
+
+# 🌪️ Mars Environment
+
+The `MarsEnvironment` class manages environmental conditions that affect operations.
+
+Supported conditions include:
+
+- NORMAL
+- DUST_STORM
+- COMMUNICATION_DISRUPTION
+
+The environment can determine whether a specific operation is allowed.
+
+Example:
+
+```text
+DUST_STORM
+    ↓
+SURFACE_OPERATION
+    ↓
+❌ Restricted
+```
+
+---
+
+# ⏱️ Simulation and Time Management
+
+The simulation system can advance time using:
+
+```java
+manager.advanceTime(timeUnits);
+```
+
+When time advances:
+
+- The current simulation cycle increases.
+- Active missions progress.
+- Mission elapsed time is updated.
+- Missions are completed when their duration is reached.
+- Assigned agents become available again after completion.
+
+Example:
+
+```text
+Mission Duration = 3
+
+Time = 0 → ASSIGNED
+Time = 1 → IN_PROGRESS
+Time = 2 → IN_PROGRESS
+Time = 3 → COMPLETED
+```
+
+---
+
+# 🏗️ Project Structure
+
+The project is organized into the following packages:
+
+```text
+marsops/
+│
+├── Agents/
+│   ├── Agent.java
+│   │
+│   ├── Crew/
+│   │   ├── CrewMember.java
+│   │   ├── Engineer.java
+│   │   ├── MedicalOfficer.java
+│   │   └── Scientist.java
+│   │
+│   └── Robots/
+│       ├── Robot.java
+│       ├── Drone.java
+│       ├── ExplorationRover.java
+│       └── RepairRobot.java
+│
+├── colony/
+│   ├── Colony.java
+│   ├── MarsEnvironment.java
+│   └── ResourceManager.java
+│
+├── emergencies/
+│   ├── Emergency.java
+│   ├── FireEmergency.java
+│   ├── MedicalEmergency.java
+│   ├── OxygenLeakEmergency.java
+│   └── RoverBreakdownEmergency.java
+│
+├── Facilities/
+│   ├── Facility.java
+│   ├── CommunicationStation.java
+│   ├── Equipment.java
+│   ├── Habitat.java
+│   ├── Laboratory.java
+│   ├── LifeSupportSystem.java
+│   ├── PowerStation.java
+│   └── Storage.java
+│
+├── missions/
+│   ├── Mission.java
+│   ├── ExplorationMission.java
+│   ├── RepairMission.java
+│   ├── ResearchMission.java
+│   ├── RescueMission.java
+│   ├── MissionStatus.java
+│   ├── Simulation.java
+│   └── SimulationManager.java
+│
+├── AppEnums.java
+│
+└── Main.java
+```
+
+---
+
+# 💡 OOP Concepts Used
+
+## 🔒 Encapsulation
+
+Important data is stored using private fields and accessed through controlled methods.
+
+```java
+private boolean available;
+```
+
+---
+
+## 🧬 Inheritance
+
+Different types of agents inherit from common base classes.
+
+Example:
+
+```text
+Agent
+│
+├── CrewMember
+│   ├── Scientist
+│   ├── Engineer
+│   └── MedicalOfficer
+│
+└── Robot
+    ├── Drone
+    ├── ExplorationRover
+    └── RepairRobot
+```
+
+---
+
+## 🎭 Polymorphism
+
+Different agents can respond differently to the same operation.
+
+For example:
+
+```java
+agent.canPerform(mission);
+```
+
+The system asks the object whether it can perform the mission without needing to know its exact concrete type.
+
+---
+
+## 🎨 Abstraction
+
+Base classes such as `Agent`, `Mission`, `Emergency`, and `Facility` define common behavior that is shared by specialized classes.
+
+---
+
+## 🧩 Composition
+
+The `Colony` acts as a central coordinator that contains and manages:
+
+- Agents
+- Facilities
+- Environment
+- Resource Manager
+- Active Mission
+
+---
+
+# 🧪 Test Scenarios
+
+The `Main` class contains multiple test scenarios that demonstrate the system's behavior.
+
+Examples include:
+
+### ✅ Successful Exploration
+
+A scientist and exploration rover successfully complete an exploration mission.
+
+---
+
+### ❌ Mission Rejection
+
+A mission is rejected when the assigned agents do not have the required capabilities.
+
+---
+
+### 📦 Resource Shortage
+
+A mission is rejected when the colony does not have enough resources.
+
+---
+
+### 🌪️ Environmental Restrictions
+
+A mission may be rejected when the current Mars environmental condition prevents its required operation.
+
+---
+
+### 🚨 Emergency Handling
+
+The system demonstrates emergency situations and responses by appropriate agents.
+
+---
+
+# ▶️ How to Run
+
+## Using the Command Line
+
+Compile the project:
 
 ```bash
-
-git clone <repository-url>
-
-cd <your-repo>
-
-mkdir -p out
-
-javac -d out $(find src -name "*.java")
-
-java -cp out Main
-
+javac -d out $(find . -name "*.java")
 ```
 
-### Windows (PowerShell)
+Run the application:
 
-```powershell
-
-mkdir out
-
-javac -d out (Get-ChildItem -Recurse -Filter *.java src | ForEach-Object FullName)
-
-java -cp out Main
-
+```bash
+java -cp out marsops.Main
 ```
 
-### Using an IDE
-
-Open the folder in IntelliJ IDEA / Eclipse / VS Code, mark `src` as the source root, and run `Main`.
+> On Windows, you can compile the Java files using your IDE or configure the command according to your terminal environment.
 
 ---
 
-## 13. Demonstration Scenarios
+# 🛠️ Technologies Used
 
-Running `Main` executes all five required scenarios in order. Each prints the system state and a clear success/failure message.
-
-| # | Scenario | What it demonstrates | Expected result |
-
-|---|---|---|---|
-
-| 1 | **Successful Exploration** | Scientist + Exploration Rover + equipment + mission | Mission goes `ASSIGNED → IN_PROGRESS → COMPLETED`; state printed before and after |
-
-| 2 | **Mission Rejection** | Mission submitted with an unsuitable agent | `Mission cannot be assigned.` — *Reason: Agent does not possess the required capability.* Mission never becomes active |
-
-| 3 | **Resource Shortage** | Mission needing more resources than the colony-wide total | Rejected; **no resources consumed**; no negative quantities; clear failure reason |
-
-| 4 | **Emergency Handling** | Oxygen leak in a habitat | Detected → habitat located → responders identified → repair attempted → resources consumed → habitat state updated |
-
-| 5 | **Environmental Effect** | Dust storm | `Exploration Mission cannot start.` — *Reason: Surface operations are not allowed during a dust storm.* |
+- Java
+- Object-Oriented Programming
+- Java Collections Framework
+- Enums
+- Exception Handling
+- Polymorphism
+- Inheritance
+- Abstraction
+- Encapsulation
 
 ---
 
-## 14. Assumptions & Other Implementation Decisions
+# 🎓 Educational Purpose
 
-- **Time unit:** one call to `advanceTime(1)` = one time unit. A mission starts counting when it becomes `IN_PROGRESS`.
+This project was developed as part of a **Programming II / Object-Oriented Programming** course.
 
-- **Resource units:** integer quantities; mission costs (e.g. repair = 2 spare parts + 5 battery units) are defined per mission.
+The main goal is to apply Java OOP concepts to a realistic simulation system involving:
 
-- **Fatigue / battery:** fatigue rises and battery drops by fixed amounts per time unit while an agent is on a mission.
-
-- **Availability:** an agent is available iff it is not assigned to the active mission **and** is in usable condition (not damaged / not critically hurt / battery above minimum).
-
-- **Oxygen-leak amount:** defined by the scenario passed to the emergency (we use `<N>` units in the demo).
-
-- **Environment changes:** applied by `Simulation`, either manually triggered in the demo or on a schedule.
-
-- **Validation:** invalid inputs (negative quantities, null agents) are rejected with an exception or a clear message.
+- Autonomous agents
+- Resource management
+- Mission validation
+- Environmental restrictions
+- Emergency management
+- Time-based simulation
 
 ---
 
-## 15. Team
+# 🚀 Future Improvements
 
-| Name | Student ID |
+Possible future improvements include:
 
-| *Yassin Tarek* | *10072* |
-
-| *Eyad Tamer* | *10139* |
-
-| *Amr Elbaghdady* | *10224* |
-
-**Course staff:** Dr Mervat Mikhail · Dr Ahmed Elsayed
+- 📊 Graphical User Interface
+- 💾 Database integration
+- 🖥️ Real-time simulation dashboard
+- 📈 Colony statistics and reports
+- 🔄 Multiple concurrent missions
+- 🤖 More autonomous decision-making
+- 💾 Save and load simulation data
+- 🌐 Web-based interface
 
 ---
 
-<sub>Alexandria University · Faculty of Engineering · Computer and Communication Engineering · Programming II · Fall 2026</sub>
+# 👥 Contributors
+
+This project was developed as a team project for a Java Programming II course.
+
+Contributions and improvements can be managed using Git and GitHub.
+
+---
+
+## 🌌 MARS-OPS
+
+**Autonomous Mars Colony Management & Emergency Simulator**
+
+> Managing a colony on Mars through intelligent agents, missions, resources, environmental conditions, and emergency response systems. 🚀🔴

@@ -20,7 +20,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        boolean[] results = new boolean[5];
+        boolean[] results = new boolean[8];
+
 
         System.out.println("\n========================================");
         System.out.println("       MARS-OPS TEST SCENARIOS");
@@ -31,6 +32,9 @@ public class Main {
         results[2] = scenario3();
         results[3] = scenario4();
         results[4] = scenario5();
+        results[5] = scenario6();
+        results[6] = scenario7();
+        results[7] = scenario8();
 
         System.out.println("\n========================================");
         System.out.println("             FINAL RESULTS");
@@ -48,7 +52,7 @@ public class Main {
         }
 
         System.out.println("----------------------------------------");
-        System.out.println("Total: " + passed + "/5 scenarios passed");
+        System.out.println("Total: " + passed + "/8 scenarios passed");
         System.out.println("========================================");
     }
 
@@ -333,4 +337,147 @@ public class Main {
 
         return passed;
     }
+
+    private static boolean scenario6() {
+
+    System.out.println("\n===== SCENARIO 6: UNAVAILABLE AGENT =====");
+
+    Colony colony = new Colony("Ares Colony Alpha");
+
+    Laboratory lab = new Laboratory("Research Lab", "Habitat Zone", 10);
+    lab.addResource(ResourceType.BATTERY_POWER, 20);
+    lab.addResource(ResourceType.FUEL, 10);
+    colony.addFacility(lab);
+
+    Scientist scientist = new Scientist(
+            "S-06", "Test Scientist", "Research Lab"
+    );
+
+    ExplorationRover rover = new ExplorationRover(
+            "R-06", "Mars Rover", "Research Lab", 100
+    );
+
+    rover.setAvailable(false);
+
+    colony.addAgent(scientist);
+    colony.addAgent(rover);
+
+    SimulationManager manager = new SimulationManager(colony);
+
+    ExplorationMission mission = new ExplorationMission(
+            "M-06", "Mars Exploration", 3, "Valles Marineris"
+    );
+
+    boolean accepted = manager.submitMission(
+            mission, List.of(scientist, rover)
+    );
+
+    System.out.println("Mission accepted: " + accepted);
+    System.out.println("Failure reason: " + mission.getFailureReason());
+    System.out.println("Mission state: " + mission.getState());
+
+    boolean passed = !accepted
+            && mission.getState() == MissionState.FAILED
+            && scientist.isAvailable()
+            && !rover.isAvailable()
+            && manager.getActiveMission() == null;
+
+    System.out.println(passed
+            ? "SCENARIO 6 PASSED!"
+            : "SCENARIO 6 FAILED!");
+
+    return passed;
+}
+
+
+private static boolean scenario7() {
+
+    System.out.println("\n===== SCENARIO 7: ANOTHER MISSION IS ACTIVE =====");
+
+    Colony colony = new Colony("Ares Colony Alpha");
+
+    Laboratory lab = new Laboratory("Research Lab", "Habitat Zone", 10);
+    lab.addResource(ResourceType.BATTERY_POWER, 40);
+    lab.addResource(ResourceType.FUEL, 20);
+    colony.addFacility(lab);
+
+    Scientist scientist = new Scientist(
+            "S-07", "Test Scientist", "Research Lab"
+    );
+
+    ExplorationRover rover = new ExplorationRover(
+            "R-07", "Mars Rover", "Research Lab", 100
+    );
+
+    colony.addAgent(scientist);
+    colony.addAgent(rover);
+
+    SimulationManager manager = new SimulationManager(colony);
+
+    ExplorationMission firstMission = new ExplorationMission(
+            "M-07A", "First Exploration", 3, "Region A"
+    );
+
+    ExplorationMission secondMission = new ExplorationMission(
+            "M-07B", "Second Exploration", 3, "Region B"
+    );
+
+    boolean firstAccepted = manager.submitMission(
+            firstMission, List.of(scientist, rover)
+    );
+
+    boolean secondAccepted = manager.submitMission(
+            secondMission, List.of(scientist, rover)
+    );
+
+    System.out.println("First mission accepted: " + firstAccepted);
+    System.out.println("Second mission accepted: " + secondAccepted);
+    System.out.println("Second mission failure: "
+            + secondMission.getFailureReason());
+    System.out.println("Second mission state: " + secondMission.getState());
+
+    boolean passed = firstAccepted
+            && !secondAccepted
+            && firstMission.getState() == MissionState.ASSIGNED
+            && secondMission.getState() == MissionState.FAILED
+            && manager.getActiveMission() == firstMission;
+
+    System.out.println(passed
+            ? "SCENARIO 7 PASSED!"
+            : "SCENARIO 7 FAILED!");
+
+    return passed;
+}
+
+
+private static boolean scenario8() {
+
+    System.out.println("\n===== SCENARIO 8: EMPTY MISSION TEAM =====");
+
+    Colony colony = new Colony("Ares Colony Alpha");
+
+    SimulationManager manager = new SimulationManager(colony);
+
+    ExplorationMission mission = new ExplorationMission(
+            "M-08", "Exploration Without Team", 3, "Region C"
+    );
+
+    boolean accepted = manager.submitMission(
+            mission, List.of()
+    );
+
+    System.out.println("Mission accepted: " + accepted);
+    System.out.println("Failure reason: " + mission.getFailureReason());
+    System.out.println("Mission state: " + mission.getState());
+
+    boolean passed = !accepted
+            && mission.getState() == MissionState.FAILED
+            && manager.getActiveMission() == null;
+
+    System.out.println(passed
+            ? "SCENARIO 8 PASSED!"
+            : "SCENARIO 8 FAILED!");
+
+    return passed;
+}
 }
