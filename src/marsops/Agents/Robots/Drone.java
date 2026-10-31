@@ -7,8 +7,8 @@ public class Drone extends Robot {
 
     public Drone(String id, String name, String location, int batteryLevel) {
         super(id, name, location, batteryLevel, Set.of(
-            Capability.SCIENTIFIC_RESEARCH // SCIENTIFC CAPABLITY IN DRONE
-        )
-             );
+            Capability.SCIENTIFIC_RESEARCH,
+            Capability.AERIAL_RECON
+        ));
     }
 }

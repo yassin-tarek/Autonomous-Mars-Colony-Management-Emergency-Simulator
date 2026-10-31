@@ -28,7 +28,7 @@ public class SimulationManager {
         this.colony = colony;
         this.environment = (environment != null) ? environment : (colony != null ? colony.getEnvironment() : new MarsEnvironment());
         this.resourceManager = (resourceManager != null) ? resourceManager : (colony != null ? colony.getResourceManager() : new ResourceManager(new ArrayList<>()));
-        this.activeMission = null;
+        this.activeMission = (colony != null) ? colony.getActiveMission() : null;
         this.currentCycle = 0;
     }
 

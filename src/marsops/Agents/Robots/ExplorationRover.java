@@ -7,7 +7,9 @@ public class ExplorationRover extends Robot {
 
     public ExplorationRover(String id, String name, String location, int batteryLevel) {
         super(id, name, location, batteryLevel, Set.of(
-            Capability.SCIENTIFIC_RESEARCH //SCIENTIFIC 
+            Capability.SCIENTIFIC_RESEARCH,
+            Capability.SURFACE_EXPLORATION,
+            Capability.EQUIPMENT_REPAIR
         ));
     }
 }
