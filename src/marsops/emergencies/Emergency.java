@@ -5,7 +5,7 @@ import marsops.AppEnums.*;
 import marsops.colony.Colony;
 
 public abstract class Emergency {
-    protected String id;
+    protected final String id;
     protected String location;
     protected EmergencyState state;
     protected String resolutionNote;

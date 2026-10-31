@@ -28,9 +28,7 @@ public class OxygenLeakEmergency extends Emergency {
 
         affectedHabitat.getLifeSupport().setFunctional(false);
 
-        int initialLoss = affectedHabitat.deductResourceUpTo(
-            ResourceType.OXYGEN, leakOxygenAmount
-        );
+    affectedHabitat.deductResourceUpTo(ResourceType.OXYGEN, leakOxygenAmount);
 
         Agent human = null;
         Agent robot = null;
