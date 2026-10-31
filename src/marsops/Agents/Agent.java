@@ -40,7 +40,7 @@ public abstract boolean isUsable(); //for robot check not damaged and battery>0,
         return isAvailable && isUsable();
     }
 
-    // Add mission checks here.
+    // Add mission checks here3RT7FGE3YDGEYUDGVQEYUDVYQDUYEVY.
     public boolean canPerform(marsops.missions.Mission mission) {
         if (mission == null) return false;
         return mission.canBePerformedBy(this);
