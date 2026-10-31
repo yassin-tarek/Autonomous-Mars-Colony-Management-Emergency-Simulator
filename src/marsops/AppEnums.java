@@ -6,6 +6,13 @@ public class AppEnums {
 public enum ResourceType {
     OXYGEN, WATER, FOOD, FUEL, BATTERY_POWER, MEDICAL_SUPPLIES, SPARE_PARTS
 }
+    
+public enum MissionType {
+    EXPLORATION,
+    REPAIR,
+    RESEARCH,
+    RESCUE
+}
 
 public enum Capability {
     SCIENTIFIC_RESEARCH,
