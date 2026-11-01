@@ -2,7 +2,7 @@ package marsops.Facilities;
 import marsops.AppEnums.Capability;
 
 public class Equipment {
-  private String name;
+    private String name;
     private Capability providedCapability;
     private boolean damaged;
 

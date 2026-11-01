@@ -65,7 +65,7 @@ public class SimulationManager {
             return false;
         }
 
-        // Rule 2: Mars Environment restrictions (e.g. Dust storm disallows surface exploration)
+        // Rule 2: Mars Environment conditions
         if (mission.getOperationType() != null) {
             Optional<String> restriction = environment.checkRestriction(mission.getOperationType());
             if (restriction.isPresent()) {
@@ -82,7 +82,7 @@ public class SimulationManager {
             return false;
         }
 
-        // Rule 4: Agent availability & polymorphic capability check
+        // Rule 4: Agent availability 
         for (Agent agent : candidateAgents) {
             if (agent == null) {
                 mission.fail("Null agent reference provided.");
@@ -102,7 +102,6 @@ public class SimulationManager {
                 return false;
             }
 
-            // Polymorphic check (Ask the agent if it can perform the mission without instanceof)
             if (!agent.canPerform(mission)) {
                 mission.fail("Agent does not possess the required capability.");
                 System.out.println("REJECTED: " + mission.getFailureReason());
@@ -110,7 +109,7 @@ public class SimulationManager {
             }
         }
 
-        // Rule 5: Team capability completeness for Exploration (requires surface travel + scientific skill)
+        // Rule 5: Team capability completeness for Exploration 
         if (mission.getType() == MissionType.EXPLORATION) {
             boolean hasSurfaceTravel = false;
             boolean hasResearch = false;
@@ -137,7 +136,6 @@ public class SimulationManager {
             return false;
         }
 
-        // ── All Checks Passed: Accept Mission ────────────────────────────────────
         // All-or-nothing consumption
         resourceManager.consume(mission.getRequiredResources());
 
@@ -157,9 +155,8 @@ public class SimulationManager {
         return true;
     }
 
-    /**
-     * Advances simulation time by the specified number of time units.
-     */
+    
+     // Advances simulation time by the specified number of time units.
     public void advanceTime(int units) {
         if (units <= 0) {
             throw new IllegalArgumentException("Time advancement units must be positive.");
@@ -170,13 +167,12 @@ public class SimulationManager {
             System.out.println("\n>>> SIMULATION CYCLE " + currentCycle + " <<<");
 
             if (activeMission != null) {
-                // Transition ASSIGNED -> IN_PROGRESS on first step
+
                 if (activeMission.getState() == MissionState.ASSIGNED) {
                     activeMission.setState(MissionState.IN_PROGRESS);
                     System.out.println("Mission " + activeMission.getId() + " transitioned to IN_PROGRESS.");
                 }
 
-                // Check ongoing environmental hazards
                 if (activeMission.getOperationType() != null) {
                     Optional<String> hazard = environment.checkRestriction(activeMission.getOperationType());
                     if (hazard.isPresent()) {
@@ -218,7 +214,7 @@ public class SimulationManager {
         }
     }
 
-    // ── Getters ───────────────────────────────────────────────────────────────
+    // Getters 
     public Colony getColony() {
         return colony;
     }

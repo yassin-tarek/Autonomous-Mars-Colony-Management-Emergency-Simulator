@@ -40,7 +40,7 @@ public abstract class Facility {
         return resources.getOrDefault(type, 0);
     }
 
-    // Deducts up to available amount SO FOOKING IMPORTNAT FOR MISSIONS Ai generated elsra7a but i catch the idea of the method
+
     public int deductResourceUpTo(ResourceType type, int amount) {
         int current = getResourceQuantity(type);
         int deducted = Math.min(current, Math.max(0, amount));

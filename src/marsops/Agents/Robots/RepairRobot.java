@@ -7,7 +7,8 @@ public class RepairRobot extends Robot {
 
     public RepairRobot(String id, String name, String location, int batteryLevel) {
         super(id, name, location, batteryLevel, Set.of(
-            Capability.EQUIPMENT_REPAIR // REPAIR OFC 
+            Capability.EQUIPMENT_REPAIR, // REPAIR OFC 
+            Capability.COMMUNICATION 
         ));
     }
 }

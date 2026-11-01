@@ -2,7 +2,6 @@ package marsops;
 
 import java.util.List;
 
-import marsops.Agents.Agent;
 import marsops.Agents.Crew.Scientist;
 import marsops.Agents.Crew.MedicalOfficer;
 import marsops.Agents.Crew.Engineer;
